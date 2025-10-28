@@ -118,6 +118,11 @@ def logout(request):
     return redirect('home')
 
 @login_required
+def profile(request):
+    """User profile view showing account information"""
+    return render(request, 'profile.html')
+
+@login_required
 def dashboard(request):
     # Get the latest sensor readings
     latest_reading = SensorReading.objects.first()  # Most recent reading
