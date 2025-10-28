@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Monitor: Register</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles and Inter font for a modern dark look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* bg-gray-900 equivalent */
+        }
+        .register-card {
+            /* Minimal animation for a clean feel */
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+
+    <!-- Register Card Container -->
+    <div class="register-card w-full max-w-md bg-gray-800 rounded-xl p-8 sm:p-10 shadow-2xl border border-gray-700">
+        
+        <h1 class="text-3xl font-extrabold text-white text-center mb-2">
+            Register New Account
+        </h1>
+        <p class="text-gray-400 text-center mb-8">
+            Create an account to track your $\text{IoT}$ device data.
+        </p>
+
+        <!-- Register Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Username Input -->
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Email Input -->
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in form.email.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Password Input -->
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in form.password1.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+             <!-- Confirm Password Input -->
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div class="text-red-400 text-sm mt-1">
+                        {% for error in form.password2.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Display form errors -->
+            {% if form.non_field_errors %}
+                <div class="text-red-400 text-sm">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Submit Button -->
+            <button type="submit" 
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                Register Account
+            </button>
+        </form>
+
+        <!-- Message Box for Feedback -->
+        <div id="messageBox" class="mt-6 text-center text-sm p-3 rounded-lg hidden"></div>
+
+        <!-- Login Link -->
+        <div class="mt-8 text-center text-sm">
+            <p class="text-gray-400">
+                Already have an account? 
+                <a href="{% url 'login' %}" class="font-medium text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out">
+                    Login here
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

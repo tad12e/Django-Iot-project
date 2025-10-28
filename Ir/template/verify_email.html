@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Monitor: Verify Email</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles and Inter font for a modern dark look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1f2937; /* bg-gray-900 equivalent */
+        }
+        .verify-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Specific style for code input to center text and look distinct */
+        .code-input {
+            text-align: center;
+            letter-spacing: 0.5rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+
+    <!-- Verification Card Container -->
+    <div class="verify-card w-full max-w-md bg-gray-800 rounded-xl p-8 sm:p-10 shadow-2xl border border-gray-700">
+        
+        <h1 id="mainTitle" class="text-3xl font-extrabold text-white text-center mb-2">
+            Verification Required
+        </h1>
+        <p id="mainSubtitle" class="text-gray-400 text-center mb-8">
+            Please enter the 6-digit code sent to your email.
+        </p>
+
+        <!-- 
+            STEP 2: Code Verification Input (Initial View for this page) 
+        -->
+        <div id="verificationWrapper" class="text-center bg-gray-700 p-6 rounded-xl border border-yellow-600 shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-yellow-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-6 2l-2-2m0 0L8 10"/>
+            </svg>
+            <h2 class="text-2xl font-semibold text-white mb-3 border-b border-gray-600 pb-2">
+                Email Verification
+            </h2>
+            <p id="emailSentMessage" class="text-gray-300 mb-6">
+                Enter the code to activate your account.
+            </p>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Code Input Field -->
+                <div>
+                    {{ form.code }}
+                    {% if form.code.errors %}
+                        <div class="text-red-400 text-sm mt-1">
+                            {% for error in form.code.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                    Verify Code
+                </button>
+                
+                <p class="text-xs text-gray-400 pt-2">
+                    <a href="#" class="text-indigo-400 hover:text-indigo-300">Resend Code</a> | Code: <span class="text-indigo-400 font-mono">123456</span> (for simulation)
+                </p>
+            </form>
+            
+            <!-- Display Django form errors -->
+            {% if form.non_field_errors %}
+                <div class="mt-6 text-center text-sm p-3 rounded-lg bg-red-900 text-red-300">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div id="verificationMessageBox" class="mt-6 text-center text-sm p-3 rounded-lg hidden"></div>
+        </div>
+        
+        <!-- 
+            STEP 3: Final Success Message (Initially hidden) 
+        -->
+        <div id="finalSuccessMessage" class="hidden text-center mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-green-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-2xl font-semibold text-white mb-3">
+                Account Verified!
+            </h2>
+            <p class="text-gray-300 mb-6">
+                Your account is now active. You can proceed to log in and start monitoring your $\text{IoT}$ device data.
+            </p>
+            <a href="{% url 'login' %}" class="mt-6 inline-block w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                Go to Login Page
+            </a>
+        </div>
+
+
+        <!-- Login Link -->
+        <div class="mt-8 text-center text-sm" id="loginRedirect">
+            <p class="text-gray-400">
+                Need to log in? 
+                <a href="{% url 'login' %}" class="font-medium text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out">
+                    Click here
+                </a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
