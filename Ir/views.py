@@ -12,7 +12,7 @@ from django.contrib import auth
 from django.contrib.auth.decorators import login_required 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import SensorReading, EmailVerification
+from .models import SensorReading, EmailVerification, SensorReadingSerializer
 from django.db import models
 import json
 
@@ -101,8 +101,8 @@ def login(request):
     if request.method=='POST':
         form=LoginForm(request, data=request.POST)
         if form.is_valid():
-            username=form.POST.get('username')
-            password=form.POST.get('password')
+            username=form.cleaned_data.get('username')
+            password=form.cleaned_data.get('password')
             user=authenticate(request, username=username, password=password)
             if user is not None:
                 auth.login(request, user)
@@ -150,13 +150,15 @@ def recieve(request):
         
         try:
             data=json.loads(request.body)
-            temp=data.get('temprature')
-            humid=data.get('humidity')
-            if temp is not None and humid is not None:
-                SensorReading.objects.create(temprature=temp, humidity=humid)
+            
+            # Use the serializer for validation
+            serializer = SensorReadingSerializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
                 return JsonResponse({'status': 'success', 'message': 'data_saved'}, status=201)
             else:
-                return JsonResponse({'status':'error', 'message':'Missing data fields'}, status=400)
+                return JsonResponse({'status':'error', 'message': serializer.errors}, status=400)
+                
         except json.JSONDecodeError:
             return JsonResponse({'status':"error", 'message':'Invalid JSON format'}, status=400)
         except Exception as e:
